@@ -301,7 +301,6 @@ exports.getAllUsers = async (_req, res) => {
   }
 };
 
-const nodemailer = require("nodemailer");
 
 const sendPlacementEmails = async (users, venue, date, time) => {
   console.log("venue", venue);
