@@ -337,11 +337,47 @@ const sendPlacementEmails = async (users, venue) => {
   }
 };
 
+
+// this is working code without date and time
+// exports.sendPlacementEmails = async (req, res) => {
+//   const { start, end, gender, venue } = req.query; // Extract parameters from query
+
+//   // Validate query parameters
+//   if (!start || !end || isNaN(start) || isNaN(end) || !gender || !venue) {
+//     return res.status(400).json({ message: 'Invalid parameters' });
+//   }
+
+//   console.log('Starting email sending process...');
+//   try {
+//     let users;
+//     if (gender === 'M') {
+//       users = await MaleUser.find({
+//         gender: 'M',
+//         userNumber: { $gte: parseInt(start), $lte: parseInt(end) },
+//       });
+//     } else if (gender === 'F') {
+//       users = await FemaleUser.find({
+//         gender: 'F',
+//         userNumber: { $gte: parseInt(start), $lte: parseInt(end) },
+//       });
+//     }
+
+//     await sendPlacementEmails(users, venue);
+
+//     console.log('Email sending process completed.');
+//     res.json({ message: "Emails sent successfully" });
+//   } catch (err) {
+//     console.error('Error in sending emails:', err.message);
+//     res.status(500).send("Server error");
+//   }
+// };
+
+
 exports.sendPlacementEmails = async (req, res) => {
-  const { start, end, gender, venue } = req.query; // Extract parameters from query
+  const { start, end, gender, venue, date, time } = req.query; // Extract parameters from query
 
   // Validate query parameters
-  if (!start || !end || isNaN(start) || isNaN(end) || !gender || !venue) {
+  if (!start || !end || isNaN(start) || isNaN(end) || !gender || !venue || !date || !time) {
     return res.status(400).json({ message: 'Invalid parameters' });
   }
 
@@ -360,7 +396,22 @@ exports.sendPlacementEmails = async (req, res) => {
       });
     }
 
-    await sendPlacementEmails(users, venue);
+    const emailContent = `
+      Dear Student,
+
+      You are invited to attend the placement test at the following venue:
+
+      Venue: ${venue}
+      Date: ${date}
+      Time: ${time}
+
+      Please be on time.
+
+      Best regards,
+      Your Placement Team
+    `;
+
+    await sendPlacementEmails(users, emailContent);
 
     console.log('Email sending process completed.');
     res.json({ message: "Emails sent successfully" });
@@ -369,5 +420,3 @@ exports.sendPlacementEmails = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
-
-
