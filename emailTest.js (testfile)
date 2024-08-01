@@ -1,0 +1,25 @@
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.user,
+    pass: process.env.pass,
+  },
+});
+
+const mailOptions = {
+  from: process.env.user,
+  to: 'iamagoodboi4@gmail.com', // Replace with your email to test
+  subject: 'Test Email',
+  text: 'This is a test email from Nodemailer',
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    return console.log(error);
+  }
+  console.log('Message sent: %s', info.messageId);
+  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+});
