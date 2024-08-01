@@ -301,8 +301,11 @@ exports.getAllUsers = async (_req, res) => {
   }
 };
 
-const sendPlacementEmails = async (users, venue) => {
-  console.log("venue", venue)
+const nodemailer = require("nodemailer");
+
+const sendPlacementEmails = async (users, venue, date, time) => {
+  console.log("venue", venue);
+  
   // Setup the email transport
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -317,14 +320,18 @@ const sendPlacementEmails = async (users, venue) => {
     const mailOptions = {
       from: process.env.user,
       to: user.email,
-      subject: `Placement Notification`,
+      subject: "Placement Notification",
       html: `
         <div style="font-family: 'Montserrat', sans-serif; text-align: center; padding: 20px; border: 2px solid #2683CD;">
-     <h2 style="color: #267BBB; font-weight: bold;">Placement Notification</h2>
-     <p style="color: #8DC63F; font-weight: bold;">Dear ${user.name},</p>
-     <p style="color: #8DC63F; font-weight: bold;">You have been assigned to ${venue}.</p>
-     <p style="color: #8DC63F; font-weight: bold;">Best regards,<br/>Saylani</p>
-   </div>
+          <h2 style="color: #267BBB; font-weight: bold;">Placement Notification</h2>
+          <p style="color: #8DC63F; font-weight: bold;">Dear ${user.name},</p>
+          <p style="color: #8DC63F; font-weight: bold;">You are invited to attend the placement test at the following venue:</p>
+          <p style="color: #8DC63F; font-weight: bold;">Venue: ${venue}</p>
+          <p style="color: #8DC63F; font-weight: bold;">Date: ${date}</p>
+          <p style="color: #8DC63F; font-weight: bold;">Time: ${time}</p>
+          <p style="color: #8DC63F; font-weight: bold;">Please be on time.</p>
+          <p style="color: #8DC63F; font-weight: bold;">Best regards,<br/>Saylani</p>
+        </div>
       `,
     };
 
@@ -336,42 +343,6 @@ const sendPlacementEmails = async (users, venue) => {
     }
   }
 };
-
-
-// this is working code without date and time
-// exports.sendPlacementEmails = async (req, res) => {
-//   const { start, end, gender, venue } = req.query; // Extract parameters from query
-
-//   // Validate query parameters
-//   if (!start || !end || isNaN(start) || isNaN(end) || !gender || !venue) {
-//     return res.status(400).json({ message: 'Invalid parameters' });
-//   }
-
-//   console.log('Starting email sending process...');
-//   try {
-//     let users;
-//     if (gender === 'M') {
-//       users = await MaleUser.find({
-//         gender: 'M',
-//         userNumber: { $gte: parseInt(start), $lte: parseInt(end) },
-//       });
-//     } else if (gender === 'F') {
-//       users = await FemaleUser.find({
-//         gender: 'F',
-//         userNumber: { $gte: parseInt(start), $lte: parseInt(end) },
-//       });
-//     }
-
-//     await sendPlacementEmails(users, venue);
-
-//     console.log('Email sending process completed.');
-//     res.json({ message: "Emails sent successfully" });
-//   } catch (err) {
-//     console.error('Error in sending emails:', err.message);
-//     res.status(500).send("Server error");
-//   }
-// };
-
 
 exports.sendPlacementEmails = async (req, res) => {
   const { start, end, gender, venue, date, time } = req.query; // Extract parameters from query
@@ -396,22 +367,7 @@ exports.sendPlacementEmails = async (req, res) => {
       });
     }
 
-    const emailContent = `
-      Dear Student,
-
-      You are invited to attend the placement test at the following venue:
-
-      Venue: ${venue}
-      Date: ${date}
-      Time: ${time}
-
-      Please be on time.
-
-      Best regards,
-      Your Placement Team
-    `;
-
-    await sendPlacementEmails(users, emailContent);
+    await sendPlacementEmails(users, venue, date, time);
 
     console.log('Email sending process completed.');
     res.json({ message: "Emails sent successfully" });
