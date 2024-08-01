@@ -15,8 +15,8 @@ connectDB();
 // Init Middleware
 app.use(express.json({ extended: false }));
 const allowedOrigins = [
-  'https://saylani-hackathon-student.vercel.app',
-  'https://saylani-hackathon-frontend-admin.vercel.app'
+  'https://blogburn.vercel.app',
+  'http://localhost:5173'
 ];
 
 // Configure CORS middleware
