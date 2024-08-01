@@ -15,7 +15,6 @@ connectDB();
 // Init Middleware
 app.use(express.json({ extended: false }));
 const allowedOrigins = [
-  'http://localhost:5173',
   'https://saylani-hackathon-student.vercel.app',
   'https://saylani-hackathon-frontend-admin.vercel.app'
 ];
@@ -31,7 +30,7 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
   credentials: true,
 }));
