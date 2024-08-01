@@ -16,7 +16,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 const allowedOrigins = [
   'https://blogburn.vercel.app',
-  'http://localhost:5173'
+  'http://localhost:5173/'
 ];
 
 // Configure CORS middleware
